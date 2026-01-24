@@ -1,0 +1,11 @@
+{
+    "vertex": "blit_screen",
+    "fragment": "els:title_combine",
+    "samplers": [
+        { "name": "uMaskSampler" },
+        { "name": "uBackgroundSampler"}
+    ],
+    "uniforms": [
+        { "name": "uTime", "type": "float", "count": 1, "values": [ 0.0 ]}
+    ]
+}
