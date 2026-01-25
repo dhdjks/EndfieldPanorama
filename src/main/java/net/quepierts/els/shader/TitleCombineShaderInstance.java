@@ -13,6 +13,9 @@ public class TitleCombineShaderInstance extends ShaderInstance {
 
     public final AbstractUniform uTime;
 
+    public final AbstractUniform uInverseViewMatrix;
+    public final AbstractUniform uInverseProjectionMatrix;
+
     public TitleCombineShaderInstance(
             @NotNull ResourceProvider provider,
             @NotNull ResourceLocation location,
@@ -21,5 +24,7 @@ public class TitleCombineShaderInstance extends ShaderInstance {
         super(provider, location, format);
 
         uTime = this.safeGetUniform("uTime");
+        uInverseViewMatrix = this.safeGetUniform("uInverseViewMatrix");
+        uInverseProjectionMatrix = this.safeGetUniform("uInverseProjectionMatrix");
     }
 }

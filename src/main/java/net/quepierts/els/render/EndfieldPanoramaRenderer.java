@@ -20,43 +20,56 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.function.Supplier;
 
-public final class EndfieldBackgroundRenderer {
+public final class EndfieldPanoramaRenderer {
 
-    private static EndfieldBackgroundRenderer instance;
+    private static EndfieldPanoramaRenderer instance;
 
     private final Minecraft minecraft;
 
     private final Supplier<PlayerSkin> skinSupplier;
     private final Model model;
 
+    private final PoseStack modelPose;
+
     private final Matrix4f modelMatrix;
+    private final Matrix4f viewMatrix;
     private final Matrix4f projectionMatrix;
+
+    private final Matrix4f invViewMatrix;
+    private final Matrix4f invProjectionMatrix;
 
     private final RenderTarget maskTarget;
     private final RenderTarget targetBackground;
 
     private float timer = 0.0f;
 
-    private EndfieldBackgroundRenderer() {
+    private EndfieldPanoramaRenderer() {
         var minecraft           = Minecraft.getInstance();
         var profile             = minecraft.getGameProfile();
         var models              = minecraft.getEntityModels();
 
         var width               = minecraft.getWindow().getWidth();
         var height              = minecraft.getWindow().getHeight();
-        var aspectRatio         = width / height;
+        var aspectRatio         = this.calculateAspectRatio(width, height);
 
         this.minecraft          = minecraft;
 
         this.skinSupplier       = minecraft.getSkinManager().lookupInsecure(profile);
         this.model              = Model.bake(models);
 
+        this.modelPose          = new PoseStack();
         this.modelMatrix        = new Matrix4f()
-                                    .translate(0f, 0.5f, -3f)
+                                    .translate(0f, 0.5f, -3.2f)
                                     .rotateY(Mth.PI)
                                     .scale(1, -1, 1);
+        this.modelPose.mulPose(this.modelMatrix);
+
+        this.viewMatrix         = new Matrix4f();
         this.projectionMatrix   = new Matrix4f()
                                     .setPerspective(70.0f, aspectRatio, 0.05f, 100.0f);
+
+        this.invViewMatrix     = new Matrix4f(this.viewMatrix).invert();
+        this.invProjectionMatrix = new Matrix4f(this.projectionMatrix).invert();
 
         this.maskTarget         = this.createTarget(width, height);
         this.targetBackground   = this.createTarget(width, height);
@@ -92,19 +105,21 @@ public final class EndfieldBackgroundRenderer {
         var format              = DefaultVertexFormat.POSITION_TEX;
         var buffer              = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, format);
 
-        model.renderToBuffer(new PoseStack(), buffer, 15728880, OverlayTexture.NO_OVERLAY);
+//        this.modelPose.pushPose();
+        model.renderToBuffer(this.modelPose, buffer, 15728880, OverlayTexture.NO_OVERLAY);
+//        this.modelPose.popPose();
 
         var mesh                = buffer.buildOrThrow();
         var vbo                 = format.getImmediateDrawVertexBuffer();
         var shader              = GameRenderer.getPositionTexShader();
 
-        var modelMatrix         = this.modelMatrix;
+        var viewMatrix         = this.viewMatrix;
         var projectionMatrix    = this.projectionMatrix;
 
         this.maskTarget.clear(false);
         this.maskTarget.bindWrite(false);
 
-        shader.MODEL_VIEW_MATRIX.set(modelMatrix);
+        shader.MODEL_VIEW_MATRIX.set(viewMatrix);
         shader.PROJECTION_MATRIX.set(projectionMatrix);
         shader.setSampler("Sampler0", texture.getId());
 
@@ -129,7 +144,10 @@ public final class EndfieldBackgroundRenderer {
 
         shader.setSampler("uMaskSampler", this.maskTarget);
         shader.setSampler("uBackgroundSampler", this.targetBackground);
+
         shader.uTime.set(this.timer);
+        shader.uInverseViewMatrix.set(this.invViewMatrix);
+        shader.uInverseProjectionMatrix.set(this.invProjectionMatrix);
 
         shader.apply();
         RenderHelper.blit();
@@ -140,8 +158,9 @@ public final class EndfieldBackgroundRenderer {
         this.maskTarget.resize(width, height, true);
         this.targetBackground.resize(width, height, true);
 
-        var aspectRatio = width / height;
+        var aspectRatio = this.calculateAspectRatio(width, height);
         this.projectionMatrix.setPerspective(70.0f, aspectRatio, 0.05f, 100.0f);
+        this.invProjectionMatrix.set(this.projectionMatrix).invert();
     }
 
     public void destroy() {
@@ -154,11 +173,11 @@ public final class EndfieldBackgroundRenderer {
             return;
         }
 
-        instance = new EndfieldBackgroundRenderer();
+        instance = new EndfieldPanoramaRenderer();
     }
 
     @NotNull
-    public static EndfieldBackgroundRenderer getInstance() {
+    public static EndfieldPanoramaRenderer getInstance() {
         return instance;
     }
 
@@ -170,6 +189,10 @@ public final class EndfieldBackgroundRenderer {
         var target = new TextureTarget(width, height, true, Minecraft.ON_OSX);
         target.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         return target;
+    }
+
+    private float calculateAspectRatio(int width, int height) {
+        return width > height ? (float) width / height : (float) height / width;
     }
 
 
