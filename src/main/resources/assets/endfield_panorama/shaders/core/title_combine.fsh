@@ -171,13 +171,13 @@ vec3 renderBackground()
     // ---------------------
     float time          = uTime;
     float disturb       = simple_noise(texCoord + vec2(time * 0.1, time * -0.1), 5.0);
-    float lineNoise     = linear_noise((texCoord.y + time * 0.01 + disturb * 0.1) * 372.3);
+    float lineNoise     = linear_noise((texCoord.y + time * 0.01 + disturb * 0.1) * 532.3);
     float line          = max(0.0, triangular_wave(lineNoise));
 
     // ---------------------
     // Color with fade by distance
     // ---------------------
-    vec3 bgColor        = vec3( mix(0.95, 0.91, line) );
+    vec3 bgColor        = vec3( mix(0.95, 0.92, line) );
     vec3 groundColor    = renderPattern(hit.xz * 0.02);
     vec3 shapeColor     = vec3(0.65);
 
