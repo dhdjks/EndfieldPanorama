@@ -27,7 +27,7 @@ public final class FrameBuffer extends BaseTexture implements Resource {
                                 : GL31.GL_COLOR_BUFFER_BIT;
 
         this.framebuffer    = -1;
-        this.textureId = -1;
+        this.textureId      = -1;
         this.depth          = -1;
         this.width          = -1;
         this.height         = -1;
@@ -76,6 +76,20 @@ public final class FrameBuffer extends BaseTexture implements Resource {
     }
 
     @Override
+    public void bind(int slot) {
+        GL31.glActiveTexture(GL31.GL_TEXTURE0 + slot);
+        GL31.glBindTexture(GL31.GL_TEXTURE_2D, this.textureId);
+        GL31.glActiveTexture(GL31.GL_TEXTURE0);
+    }
+
+    @Override
+    public void unbind(int slot) {
+        GL31.glActiveTexture(GL31.GL_TEXTURE0 + slot);
+        GL31.glBindTexture(GL31.GL_TEXTURE_2D, 0);
+        GL31.glActiveTexture(GL31.GL_TEXTURE0);
+    }
+
+    @Override
     public void free() {
         if (this.framebuffer == -1) {
             return;
@@ -86,6 +100,8 @@ public final class FrameBuffer extends BaseTexture implements Resource {
             GL31.glDeleteRenderbuffers(this.depth);
         }
         GL31.glDeleteFramebuffers(this.framebuffer);
+
+        this.framebuffer = -1;
     }
 
     public void clearColor(float r, float g, float b, float a) {

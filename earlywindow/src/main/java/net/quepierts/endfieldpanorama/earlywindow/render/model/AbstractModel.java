@@ -24,9 +24,6 @@ public abstract class AbstractModel implements Resource {
     public static final int MASK_LOWER  = 47;
 
     @Getter
-    private final Transform transform   = new Transform();
-
-    @Getter
     private final Skeleton skeleton;
 
     private final Mesh mesh;

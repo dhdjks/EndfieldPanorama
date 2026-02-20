@@ -405,6 +405,7 @@ public final class EndfieldEarlyWindow implements ImmediateWindowProvider {
         if (window == this.window && width != 0 && height != 0) {
             this.winWidth = width;
             this.winHeight = height;
+            this.fbResize(window, width, height);
         }
     }
 
@@ -505,7 +506,7 @@ public final class EndfieldEarlyWindow implements ImmediateWindowProvider {
     public void draw(float delta) {
 
         // render
-        this.scene.render(delta);
+        this.scene.render(delta, this.mainTarget::bind);
 
     }
 

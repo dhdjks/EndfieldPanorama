@@ -1,6 +1,5 @@
 package net.quepierts.endfieldpanorama.earlywindow.scene;
 
-import lombok.Getter;
 import net.quepierts.endfieldpanorama.earlywindow.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
@@ -44,7 +43,7 @@ public final class Camera {
                 .translate(-x, -y, -z);
     }
 
-    public void getInverseViewMatrix(@NotNull Matrix4f output) {
+    public void getCameraWorldMatrix(@NotNull Matrix4f output) {
         output.identity()
                 .translate(-x, y, -z)
                 .rotateZ(-roll)

@@ -1,5 +1,6 @@
 package net.quepierts.endfieldpanorama.neoforge;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import lombok.Getter;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -10,6 +11,7 @@ import net.quepierts.endfieldpanorama.earlywindow.EndfieldEarlyWindow;
 import net.quepierts.endfieldpanorama.earlywindow.ResourceManager;
 import net.quepierts.endfieldpanorama.earlywindow.scene.RenderScene;
 import net.quepierts.endfieldpanorama.neoforge.render.EndfieldPanoramaRenderer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -38,7 +40,7 @@ public final class Overlay extends LoadingOverlay {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
         if (this.scene == null) {
@@ -48,7 +50,8 @@ public final class Overlay extends LoadingOverlay {
             EndfieldPanoramaRenderer.getInstance().setup(scene, manager);
         }
 
-        this.scene.render(partialTick * 0.05f);
+        RenderTarget target = Minecraft.getInstance().getMainRenderTarget();
+        this.scene.render(partialTick * 0.05f, () -> target.bindWrite(false));
 
         long millis = Util.getMillis();
         if (this.fadeOutStart == -1L && !this.triggered) {

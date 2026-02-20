@@ -8,6 +8,7 @@ import net.quepierts.endfieldpanorama.earlywindow.render.pipeline.VertexFormat;
 public class DefaultVertexFormats {
 
     public static final VertexFormat BLIT_SCREEN;
+    public static final VertexFormat PANORAMA;
     public static final VertexFormat POSITION_TEXTURE;
 
     public static final VertexFormat CHARACTER;
@@ -17,6 +18,8 @@ public class DefaultVertexFormats {
         BLIT_SCREEN = new VertexFormat.Builder()
                 .addElement(3, ElementType.FLOAT)   // Position
                 .build();
+
+        PANORAMA = BLIT_SCREEN;
 
         POSITION_TEXTURE = new VertexFormat.Builder()
                 .addElement(3, ElementType.FLOAT)   // Position

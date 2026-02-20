@@ -92,7 +92,7 @@ public final class Timeline3f {
                 var time            = Float.parseFloat(strTime);
 
                 var content         = entry.getValue();
-                var keyFrame        = KeyFrame3f.fromJson(time, multiplier, content);
+                var keyFrame        = KeyFrame3f.fromJson(time, content);
 
                 keyFrames[i++] = keyFrame;
             }

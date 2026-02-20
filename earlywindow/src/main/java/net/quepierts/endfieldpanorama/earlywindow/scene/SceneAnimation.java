@@ -3,10 +3,9 @@ package net.quepierts.endfieldpanorama.earlywindow.scene;
 import lombok.Getter;
 import net.quepierts.endfieldpanorama.earlywindow.animation.*;
 import net.quepierts.endfieldpanorama.earlywindow.animation.definition.RawAnimationSet;
-import net.quepierts.endfieldpanorama.earlywindow.render.model.PlayerModel;
+import net.quepierts.endfieldpanorama.earlywindow.render.ModelRenderer;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public final class SceneAnimation {
@@ -17,6 +16,9 @@ public final class SceneAnimation {
 
     private final AnimationProgram  program;
     private final AnimationState    state;
+
+    private final Camera            camera;
+    private final Transform         root;
 
     private Phrase phrase = Phrase.BEGIN;
 
@@ -29,7 +31,7 @@ public final class SceneAnimation {
 
     public SceneAnimation(
             @NotNull RawAnimationSet    set,
-            @NotNull PlayerModel        model,
+            @NotNull ModelRenderer      renderer,
             @NotNull Camera             camera
     ) {
         var begin       = set.getOrThrow("begin");
@@ -41,16 +43,18 @@ public final class SceneAnimation {
                 transition.bake(),
                 loop.bake(),
         };
+        
+        var skeleton    = renderer.getModel().getSkeleton();
 
         var channels    = new ArrayList<String>();
         var outputs     = new ArrayList<Consumer3f>();
-        var clear       = new FrameBuffer(2 + 2 + model.getSkeleton().size() * 3);
+        var clear       = new FrameBuffer(2 + 2 + skeleton.size() * 3);
 
         // root
         channels.add("root.position");
         channels.add("root.rotation");
 
-        var root = model.getTransform();
+        var root = renderer.getTransform();
         outputs.add(root::setPosition);
         outputs.add(root::setRotation);
 
@@ -63,7 +67,7 @@ public final class SceneAnimation {
 
         var cursor      = 6;
 
-        for (var bone : model.getSkeleton()) {
+        for (var bone : skeleton) {
             var name    = bone.getName();
             channels.add(name + ".position");
             channels.add(name + ".rotation");
@@ -89,6 +93,9 @@ public final class SceneAnimation {
                 new int[channels.size()],
                 outputs.toArray(Consumer3f[]::new)
         );
+
+        this.camera = camera;
+        this.root   = root;
     }
 
     public void cloneState(SceneAnimation other) {
@@ -177,12 +184,13 @@ public final class SceneAnimation {
         }
 
         program.flush(state);
-    }
 
-    public boolean isLooping() {
-        return phrase == Phrase.LOOP;
+        if (phrase == Phrase.LOOP) {
+            var zOffset = this.currentTime * -16f;
+            root.translate(0f, 0f, zOffset);
+            camera.translate(0f, 0f, zOffset);
+        }
     }
-
 
     private enum Phrase {
         BEGIN,

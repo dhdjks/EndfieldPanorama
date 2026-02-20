@@ -132,7 +132,7 @@ public final class EndfieldPanoramaRenderer {
         var mainTarget      = this.minecraft.getMainRenderTarget();
 
         mainTarget.bindWrite(false);
-        this.scene.render(delta);
+        this.scene.render(delta, () -> mainTarget.bindWrite(false));
 
         VertexBuffer.unbind();
     }

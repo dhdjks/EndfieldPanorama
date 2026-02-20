@@ -20,6 +20,8 @@ public class ShaderProgram implements UniformContained, Resource {
 
     private final Map<String, AbstractUniform> uniforms;
 
+    private boolean free = false;
+
     public ShaderProgram(
             @NotNull ShaderManager manager,
             @NotNull String vertex,
@@ -91,6 +93,10 @@ public class ShaderProgram implements UniformContained, Resource {
 
     @Override
     public void free() {
+        if (this.free) {
+            return;
+        }
+        this.free = true;
         GL31.glDeleteProgram(program);
     }
 

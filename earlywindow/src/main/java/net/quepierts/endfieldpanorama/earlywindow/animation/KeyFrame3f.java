@@ -35,7 +35,6 @@ public final class KeyFrame3f {
 
     public static KeyFrame3f fromJson(
                         float       time,
-                        float       multiplier,
             @NotNull    JsonElement element
     ) {
         if (element.isJsonArray()) {

@@ -16,6 +16,8 @@ public final class VertexBuffer implements Resource {
     @Getter
     private Mesh last;
 
+    private boolean free = false;
+
     public VertexBuffer() {
         this.vertex = GL31.glGenBuffers();
         this.element = GL31.glGenBuffers();
@@ -71,6 +73,11 @@ public final class VertexBuffer implements Resource {
 
     @Override
     public void free() {
+        if (this.free) {
+            return;
+        }
+
+        this.free = true;
         GL31.glDeleteBuffers(this.vertex);
         GL31.glDeleteBuffers(this.element);
         GL31.glDeleteVertexArrays(this.array);

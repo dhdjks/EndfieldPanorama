@@ -27,11 +27,18 @@ public final class Mesh implements Resource {
     @Getter
     private final int indexCount;
 
+    private boolean free = false;
+
     public static Builder builder(VertexFormat format, int capacity) {
         return new Builder(format, capacity);
     }
 
     public void free() {
+        if (free) {
+            return;
+        }
+
+        free = true;
         ALLOCATOR.free(vboAdr);
         ALLOCATOR.free(eboAdr);
     }

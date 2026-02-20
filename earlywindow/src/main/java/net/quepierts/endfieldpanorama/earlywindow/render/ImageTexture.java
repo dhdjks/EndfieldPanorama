@@ -22,6 +22,8 @@ public final class ImageTexture extends BaseTexture implements Resource {
     @Getter
     private int height;
 
+    private boolean free = false;
+
     public static ImageTexture fromResource(String path, int glFilter, int glWrap) {
         return fromByteArray(EarlyResourceLoader.loadByteArray("textures/" + path), glFilter, glWrap);
     }
@@ -99,6 +101,11 @@ public final class ImageTexture extends BaseTexture implements Resource {
 
     @Override
     public void free() {
+        if (this.free) {
+            return;
+        }
+        this.free = true;
+
         if (this.textureId != 0) {
             this.unbind();
             GL31.glDeleteTextures(textureId);
