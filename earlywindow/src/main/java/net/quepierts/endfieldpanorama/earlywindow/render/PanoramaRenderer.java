@@ -22,7 +22,7 @@ public final class PanoramaRenderer implements Resource {
         this.mesh = mesh();
         this.buffer = new VertexBuffer();
         this.shader = new PanoramaShader(manager);
-        this.texture = CubeMapTexture.fromResource("panorama");
+        this.texture = CubeMapTexture.fromResource("skybox");
 
         this.buffer.upload(this.mesh);
     }
