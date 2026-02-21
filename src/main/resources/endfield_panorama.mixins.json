@@ -8,8 +8,7 @@
   "client": [
     "GameRendererMixin",
     "MinecraftClientMixin",
-    "PanoramaRendererMixin",
-    "TitleScreenMixin"
+    "PanoramaRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

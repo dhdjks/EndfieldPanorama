@@ -10,7 +10,6 @@ import net.minecraft.server.packs.resources.ReloadInstance;
 import net.quepierts.endfieldpanorama.earlywindow.EndfieldEarlyWindow;
 import net.quepierts.endfieldpanorama.earlywindow.ResourceManager;
 import net.quepierts.endfieldpanorama.earlywindow.scene.RenderScene;
-import net.quepierts.endfieldpanorama.neoforge.render.EndfieldPanoramaRenderer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -19,10 +18,9 @@ import java.util.function.Consumer;
 @SuppressWarnings("unused")
 public final class Overlay extends LoadingOverlay {
 
-    @Getter
-    private final EndfieldEarlyWindow window;
-    private final ResourceManager manager;
-    private RenderScene scene;
+    private final ResourceManager   manager;
+    private RenderScene             scene;
+    private EndfieldEarlyWindow     window;
 
     private long fadeOutStart = -1L;
     private boolean triggered = false;
@@ -46,6 +44,7 @@ public final class Overlay extends LoadingOverlay {
         if (this.scene == null) {
             var scene = window.getScene().duplicate(manager);
             window.close();
+            this.window = null;
             this.scene = scene;
             EndfieldPanoramaRenderer.getInstance().setup(scene, manager);
         }

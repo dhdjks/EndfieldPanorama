@@ -1,7 +1,7 @@
 package net.quepierts.endfieldpanorama.neoforge.mixin;
 
 import net.minecraft.client.Minecraft;
-import net.quepierts.endfieldpanorama.neoforge.render.EndfieldPanoramaRenderer;
+import net.quepierts.endfieldpanorama.neoforge.EndfieldPanoramaRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

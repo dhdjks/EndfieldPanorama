@@ -2,10 +2,7 @@ package net.quepierts.endfieldpanorama.neoforge.mixin;
 
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.server.packs.resources.ResourceProvider;
-import net.quepierts.endfieldpanorama.neoforge.reference.Animations;
-import net.quepierts.endfieldpanorama.neoforge.reference.Shaders;
-import net.quepierts.endfieldpanorama.neoforge.render.EndfieldPanoramaRenderer;
-import net.quepierts.endfieldpanorama.neoforge.resource.JarResourceProvider;
+import net.quepierts.endfieldpanorama.neoforge.EndfieldPanoramaRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,8 +23,6 @@ public class GameRendererMixin {
             ResourceProvider resourceProvider,
             CallbackInfo ci
     ) {
-        Shaders.preload(JarResourceProvider.INSTANCE);
-        Animations.preload(JarResourceProvider.INSTANCE);
         EndfieldPanoramaRenderer.setup();
     }
 
